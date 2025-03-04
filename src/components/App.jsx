@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../index.css";
 import TodoList from "./TodoList";
+import AddTodoForm from "./AddTodoForm";
 
 
 function App() {
@@ -26,9 +27,25 @@ function App() {
             })
         );
     }
+
+    const onAdd = (text) => {
+        setTodos(
+            [...todos, 
+                {
+                id: Date.now(),
+                completed: false,
+                text
+                }
+            ]
+        );
+    }
     
     return (
-        <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo}/>
+        <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded-lg shadow-lg">
+            <h1 className="text-3xl font-bold text-center mb-4">Todo List</h1>
+            <AddTodoForm onAdd={onAdd}/>
+            <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo}/>
+        </div>
     );
 }
 
