@@ -2,49 +2,63 @@ import React, { useState, useEffect } from "react";
 import "../index.css";
 import TodoList from "./TodoList";
 import AddTodoForm from "./AddTodoForm";
-
+import DarkModeToggle from "./DarkModeToggle";
 
 function App() {
-    const exampleTodos = [
-        {id: 1, completed: false, text: "Finish the job"},
-        {id: 2, completed: true, text: "Study for midterm"},
-        {id: 3, completed: false, text: "Learn React+TailwindCSS"}
-    ];
-    const [todos, setTodos] = useState(exampleTodos);
+    const [todos, setTodos] = useState([]);
+
+    useEffect(() => {
+        const savedTodos = JSON.parse(localStorage.getItem("todos"));
+        if (savedTodos && savedTodos.length > 0) {
+            setTodos(savedTodos);
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem("todos", JSON.stringify(todos));
+    }, [todos]);
 
     const toggleTodo = (id) => {
         setTodos(
-            todos.map((todo) => 
-                todo.id === id ? {...todo, completed: !todo.completed} : todo
+            todos.map((todo) =>
+                todo.id === id ? { ...todo, completed: !todo.completed } : todo
             )
         );
     };
-    
+
     const deleteTodo = (id) => {
+        setTodos(todos.filter((todo) => todo.id !== id));
+    };
+
+    const onAdd = (text) => {
+        setTodos([
+            ...todos,
+            {
+                id: Date.now(),
+                completed: false,
+                text,
+            },
+        ]);
+    };
+
+    const onEdit = (newText, id) => {
         setTodos(
-            todos.filter((todo) => {
-                return todo.id === id ? false : true;
-            })
+            todos.map((todo) => (
+                todo.id === id ? {...todo, text: newText} : todo
+            ))
         );
     }
 
-    const onAdd = (text) => {
-        setTodos(
-            [...todos, 
-                {
-                id: Date.now(),
-                completed: false,
-                text
-                }
-            ]
-        );
-    }
-    
     return (
-        <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded-lg shadow-lg">
-            <h1 className="text-3xl font-bold text-center mb-4">Todo List</h1>
-            <AddTodoForm onAdd={onAdd}/>
-            <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo}/>
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+            <div className="max-w-md mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-3xl font-bold">Todo List</h1>
+                    <DarkModeToggle />
+                </div>
+                <AddTodoForm onAdd={onAdd} />
+                <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo} />
+            </div>
         </div>
     );
 }
