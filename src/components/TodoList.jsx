@@ -1,7 +1,7 @@
 import React from "react";
 import TodoItem from "./TodoItem";
 
-function TodoList({todos, onToggle, onDelete}) {
+function TodoList({todos, onToggle, onDelete, onEdit}) {
     return (
         <div className="space-y-3 mt-4">
             {
@@ -9,7 +9,7 @@ function TodoList({todos, onToggle, onDelete}) {
                     <p className="text-gray-500 text-center">No tasks yet! Add one above.</p>
                 ) : (
                     todos.map((todo) => (
-                        <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onDelete={onDelete}/>
+                        <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onDelete={onDelete} onEdit={onEdit}/>
                     ))
                 )
             }
